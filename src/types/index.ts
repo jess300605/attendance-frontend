@@ -87,6 +87,7 @@ export interface TeacherLoginResponse {
   employeeId: string
   token: string
   attendanceRegistered: boolean
+  expiresIn: number // Añadimos la propiedad expiresIn para el tiempo de expiración del token
 }
 
 // API Response types
@@ -103,4 +104,3 @@ export interface PaginatedResponse<T> {
   size: number
   number: number
 }
-
