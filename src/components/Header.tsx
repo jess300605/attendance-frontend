@@ -1,15 +1,28 @@
+"use client"
+
 import type React from "react"
 import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { getTeacherName } from "../services/authService"
 import "./Header.css"
+import ThemeToggle from "./ThemeToggle" // Importamos el componente ThemeToggle
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
+  const [teacherName, setTeacherName] = useState<string | null>("Cargando...")
+
   const currentDate = new Date().toLocaleDateString("es-ES", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   })
+
+  useEffect(() => {
+    // Obtener el nombre del profesor al cargar el componente
+    const name = getTeacherName()
+    setTeacherName(name || "Usuario")
+  }, [])
 
   return (
     <header className="header">
@@ -18,6 +31,7 @@ const Header: React.FC = () => {
           <span>{currentDate}</span>
         </div>
         <div className="header-actions">
+          <ThemeToggle /> {/* Añadimos el botón de cambio de tema */}
           <div className="search-box">
             <input type="text" placeholder="Buscar..." />
             <button>
@@ -25,7 +39,7 @@ const Header: React.FC = () => {
             </button>
           </div>
           <div className="user-profile">
-            <span className="user-name">Admin</span>
+            <span className="user-name">{teacherName}</span>
             <div className="avatar">
               <i className="fas fa-user"></i>
             </div>
@@ -37,4 +51,3 @@ const Header: React.FC = () => {
 }
 
 export default Header
-

@@ -499,4 +499,3 @@ const SimpleAttendance: React.FC = () => {
 }
 
 export default SimpleAttendance
-
