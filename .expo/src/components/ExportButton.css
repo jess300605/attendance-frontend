@@ -1,0 +1,40 @@
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #1d6f42; /* Color verde de Excel */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.export-button:hover {
+  background-color: #185a36;
+}
+
+.export-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(29, 111, 66, 0.4);
+}
+
+.export-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.export-button i {
+  font-size: 1rem;
+}
+
+/* Tema oscuro */
+[data-theme="dark"] .export-button {
+  background-color: #2d8a5f;
+}
+
+[data-theme="dark"] .export-button:hover {
+  background-color: #3aa76f;
+}

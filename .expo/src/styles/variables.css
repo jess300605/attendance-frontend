@@ -1,0 +1,49 @@
+:root {
+  /* Colores principales */
+  --primary: #3f51b5; /* Azul índigo - Color principal */
+  --primary-light: #757de8;
+  --primary-dark: #002984;
+
+  /* Colores secundarios */
+  --secondary: #ff6e40; /* Naranja profundo - Acentos y botones de acción */
+  --secondary-light: #ffa06d;
+  --secondary-dark: #c53d13;
+
+  /* Colores de estado */
+  --success: #4caf50; /* Verde - Presente, éxito */
+  --warning: #ff9800; /* Ámbar - Advertencias */
+  --danger: #f44336; /* Rojo - Ausente, errores */
+  --info: #2196f3; /* Azul claro - Información */
+
+  /* Colores neutros */
+  --background: #f5f7fa; /* Fondo principal */
+  --surface: #ffffff; /* Superficies de tarjetas */
+  --border: #e0e6ed; /* Bordes */
+
+  /* Texto */
+  --text-primary: #2c3e50; /* Texto principal */
+  --text-secondary: #7f8c8d; /* Texto secundario */
+  --text-light: #ffffff; /* Texto sobre fondos oscuros */
+
+  /* Sombras */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+
+  /* Espaciado */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Bordes */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+
+  /* Transiciones */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
