@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { getTeacherName } from "../services/authService"
 import "./Header.css"
-import ThemeToggle from "./ThemeToggle" // Importamos el componente ThemeToggle
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
@@ -31,7 +30,6 @@ const Header: React.FC = () => {
           <span>{currentDate}</span>
         </div>
         <div className="header-actions">
-          <ThemeToggle /> {/* Añadimos el botón de cambio de tema */}
           <div className="search-box">
             <input type="text" placeholder="Buscar..." />
             <button>
