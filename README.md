@@ -1,94 +1,85 @@
-Aquí tienes el README completamente formateado en Markdown, listo para usarse en tu repositorio de GitHub u otra documentación:
+### README  Sistema de Gestión de Asistencia Escolar
 
----
+### 🎓 Sistema de Gestión de Asistencia Escolar - Frontend
 
-# 🎓 Sistema de Gestión de Asistencia Escolar - Frontend
+### 📋 Descripción General
 
-## 📋 Descripción General
+El frontend del Sistema de Gestión de Asistencia Escolar es una aplicación web desarrollada en React con TypeScript 
+que proporciona una interfaz intuitiva para que los docentes gestionen la asistencia de sus estudiantes, administren aulas, 
+registren calificaciones y generen reportes. Esta aplicación se conecta a una API REST desarrollada en 
+Java para la persistencia de datos.
+```plaintext
+--🚀 Características Principales
+--🏫 Gestión de Aulas: Crear, editar y eliminar aulas/salones
+--👨‍🎓 Gestión de Estudiantes: Administrar información de estudiantes
+--✅ Registro de Asistencia: Interfaz simplificada para tomar asistencia
+--📊 Calificaciones: Registro y seguimiento de calificaciones
+--📑 Exportación a Excel: Generación de reportes en formato Excel
+--🌓 Tema Claro/Oscuro: Personalización de la interfaz
+--🔔 Sistema de Notificaciones: Alertas y mensajes informativos
+--📱 Diseño Responsivo: Adaptable a diferentes dispositivos
+```
 
-El frontend del *Sistema de Gestión de Asistencia Escolar* es una aplicación web desarrollada en *React con TypeScript* que proporciona una interfaz intuitiva para que los docentes gestionen la asistencia de sus estudiantes, administren aulas, registren calificaciones y generen reportes. Esta aplicación se conecta a una API REST desarrollada en Java para la persistencia de datos.
+### 1. 🛠 Requisitos del Sistema
+```plaintext
+--Node.js 14.x o superior
+--npm 6.x o superior o yarn 1.22.x o superior
+--Navegador web moderno (Chrome, Firefox, Edge, Safari)
+--Conexión a la API backend (Java)
+```
 
----
-
-## 🚀 Características Principales
-
-* 🏫 *Gestión de Aulas*: Crear, editar y eliminar aulas/salones
-* 👨‍🎓 *Gestión de Estudiantes*: Administrar información de estudiantes
-* ✅ *Registro de Asistencia*: Interfaz simplificada para tomar asistencia
-* 📊 *Calificaciones*: Registro y seguimiento de calificaciones
-* 📑 *Exportación a Excel*: Generación de reportes en formato Excel
-* 🌓 *Tema Claro/Oscuro*: Personalización de la interfaz
-* 🔔 *Sistema de Notificaciones*: Alertas y mensajes informativos
-* 📱 *Diseño Responsivo*: Adaptable a diferentes dispositivos
-
----
-
-## 🛠 Requisitos del Sistema
-
-* Node.js 14.x o superior
-* npm 6.x o superior o yarn 1.22.x o superior
-* Navegador web moderno (Chrome, Firefox, Edge, Safari)
-* Conexión a la API backend (Java)
-
----
-
-## ⚙️ Instalación y Configuración
-
-### 1. Clonar el Repositorio
-
-bash
+### ⚙️ Instalación y Configuración
+```plaintext
+--1. Clonar el Repositorio
 git clone https://github.com/su-usuario/attendance-frontend.git
 cd attendance-frontend
-
-
+```
 ### 2. Instalar Dependencias
 
-bash
+```shellscript
 # Usando npm
 npm install
 
 # O usando yarn
 yarn install
-
+```
 
 ### 3. Configurar Variables de Entorno
 
-Cree un archivo .env en la raíz del proyecto con el siguiente contenido:
+Cree un archivo `.env` en la raíz del proyecto con el siguiente contenido:
 
-env
+```plaintext
 REACT_APP_API_URL=http://localhost:8080/api
 REACT_APP_VERSION=1.0.0
-
+```
 
 ### 4. Iniciar la Aplicación en Modo Desarrollo
 
-bash
+```shellscript
 # Usando npm
 npm start
 
 # O usando yarn
 yarn start
-
+```
 
 La aplicación estará disponible en [http://localhost:3000](http://localhost:3000)
 
 ### 5. Compilar para Producción
 
-bash
+```shellscript
 # Usando npm
 npm run build
 
 # O usando yarn
 yarn build
+```
 
-
-Los archivos compilados se generarán en la carpeta build/
-
----
+Los archivos compilados se generarán en la carpeta `build/`
 
 ## 📁 Estructura del Proyecto
 
-
+```plaintext
 attendance-frontend/
 ├── public/                  # Archivos públicos estáticos
 ├── src/
@@ -106,15 +97,13 @@ attendance-frontend/
 ├── package.json             # Dependencias y scripts
 ├── tsconfig.json            # Configuración de TypeScript
 └── README.md                # Documentación del proyecto
-
-
----
+```
 
 ## 📦 Dependencias
 
 ### Principales
 
-json
+```json
 {
   "dependencies": {
     "react": "^18.2.0",
@@ -127,11 +116,11 @@ json
     "web-vitals": "^3.3.2"
   }
 }
-
+```
 
 ### Desarrollo
 
-json
+```json
 {
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -149,9 +138,7 @@ json
     "prettier": "^3.0.0"
   }
 }
-
-
----
+```
 
 ## 🔗 Integración con la API
 
@@ -159,7 +146,7 @@ La aplicación se comunica con la API backend mediante servicios dedicados.
 
 *Ejemplo - Servicio para obtener aulas:*
 
-typescript
+```typescript
 export const getClassroomsByTeacher = async (teacherId: number): Promise<Classroom[]> => {
   try {
     const token = localStorage.getItem('token');
@@ -180,54 +167,52 @@ export const getClassroomsByTeacher = async (teacherId: number): Promise<Classro
     throw error;
   }
 };
-
-
----
+```
 
 ## 🧩 Convenciones de Código
 
-* *TypeScript* en todos los archivos
-* Nomenclatura:
+- **TypeScript** en todos los archivos
+- Nomenclatura:
 
-  * PascalCase para componentes React
-  * camelCase para funciones y variables
-  * kebab-case para archivos CSS
-* Documentar funciones/componentes complejos
-* Usar interfaces para props y tipos de datos
+- PascalCase para componentes React
+- camelCase para funciones y variables
+- kebab-case para archivos CSS
 
----
+
+
+- Documentar funciones/componentes complejos
+- Usar interfaces para props y tipos de datos
+
 
 ## 🛠 Solución de Problemas Comunes
 
 ### 🔐 Error de Autenticación
 
-* Verifique el token JWT en localStorage
-* Compruebe si ha expirado
-* Cierre sesión e intente de nuevo
+- Verifique el token JWT en localStorage
+- Compruebe si ha expirado
+- Cierre sesión e intente de nuevo
+
 
 ### 📑 Problemas de Exportación a Excel
 
-* Asegúrese que los datos no sean null o undefined
-* Verifique la estructura de los datos
-* Revise la consola del navegador
+- Asegúrese que los datos no sean null o undefined
+- Verifique la estructura de los datos
+- Revise la consola del navegador
+
 
 ### 🖥 Problemas de Visualización
 
-* Use un navegador moderno
-* Borre la caché del navegador
-* Verifique las variables CSS
+- Use un navegador moderno
+- Borre la caché del navegador
+- Verifique las variables CSS
 
----
 
 ## 📚 Recursos
 
-* [Documentación oficial de React](https://reactjs.org/)
-* [Documentación de Create React App](https://github.com/facebook/create-react-app/docs/getting-started)
+- [Documentación oficial de React](https://reactjs.org/)
+- [Documentación de Create React App](https://github.com/facebook/create-react-app/docs/getting-started)
+
 
 ---
 
-© 2023 *Sistema de Gestión de Asistencia Escolar*. Todos los derechos reservados.
-
----
-
-¿Deseas que lo convierta en un archivo descargable o que lo suba directamente a un repositorio?
+© 2023 **Sistema de Gestión de Asistencia Escolar**. Todos los derechos reservados.
