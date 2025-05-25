@@ -36,7 +36,11 @@
 
 .print-options-panel .picker-group select:focus {
   outline: none;
+<<<<<<< HEAD
   border-color: var(--secondary-light, #26b516);
+=======
+  border-color: var(--secondary-light, #ffa06d);
+>>>>>>> ee2ec35660f398e4321007b3c070aa5b1ac7d7c1
   box-shadow: 0 0 0 2px rgba(255, 174, 109, 0.3);
 }
 

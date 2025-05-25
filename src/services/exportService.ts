@@ -164,7 +164,10 @@ export const exportAttendanceForPrinting = (
   month: number,
   year: number,
   fileName = "Asistencia_Impresion",
+<<<<<<< HEAD
   grades: any[] = [], // Nuevo parámetro para las calificaciones
+=======
+>>>>>>> ee2ec35660f398e4321007b3c070aa5b1ac7d7c1
 ): boolean => {
   try {
     if (!students || students.length === 0) {
@@ -329,6 +332,7 @@ export const exportAttendanceForPrinting = (
       XLSX.utils.book_append_sheet(workbook, notesWorksheet, "Notas")
     }
 
+<<<<<<< HEAD
     // 3. NUEVA HOJA DE CALIFICACIONES
     if (grades && grades.length > 0) {
       // Preparar los datos de calificaciones
@@ -390,6 +394,8 @@ export const exportAttendanceForPrinting = (
       XLSX.utils.book_append_sheet(workbook, gradesWorksheet, "Calificaciones")
     }
 
+=======
+>>>>>>> ee2ec35660f398e4321007b3c070aa5b1ac7d7c1
     // Guardar el archivo
     XLSX.writeFile(workbook, `${fileName}.xlsx`)
 
@@ -458,6 +464,7 @@ export const exportSimpleAttendanceByClassroom = (
     return false
   }
 }
+<<<<<<< HEAD
 
 // Exportar información completa de un salón (estudiantes, notas, pertenencia y calificaciones)
 export const exportClassroomFullInfo = (classroom: any, fileName = "Información_Salón"): boolean => {
@@ -668,3 +675,5 @@ export const exportClassroomFullInfo = (classroom: any, fileName = "Información
     return false
   }
 }
+=======
+>>>>>>> ee2ec35660f398e4321007b3c070aa5b1ac7d7c1

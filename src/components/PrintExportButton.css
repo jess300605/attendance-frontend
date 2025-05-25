@@ -4,7 +4,11 @@
   justify-content: center;
   gap: 10px;
   padding: 10px 16px;
+<<<<<<< HEAD
   background-color: var(--secondary-color, #4aff40);
+=======
+  background-color: var(--secondary-color, #ff6e40);
+>>>>>>> ee2ec35660f398e4321007b3c070aa5b1ac7d7c1
   color: var(--text-on-secondary, #000000);
   border: none;
   border-radius: 6px;
@@ -17,13 +21,21 @@
 }
 
 .print-export-button:hover {
+<<<<<<< HEAD
   background-color: var(--secondary-light, #1bac18);
+=======
+  background-color: var(--secondary-light, #ffa06d);
+>>>>>>> ee2ec35660f398e4321007b3c070aa5b1ac7d7c1
   box-shadow: var(--shadow-medium);
   transform: translateY(-1px);
 }
 
 .print-export-button:active {
+<<<<<<< HEAD
   background-color: var(--secondary-dark, #2cc31b);
+=======
+  background-color: var(--secondary-dark, #c53d13);
+>>>>>>> ee2ec35660f398e4321007b3c070aa5b1ac7d7c1
   transform: translateY(1px);
   box-shadow: var(--shadow-light);
 }
@@ -39,3 +51,22 @@
 .print-export-button i {
   font-size: 1.1rem;
 }
+<<<<<<< HEAD
+=======
+
+/* Estilo para el botón de exportación simple */
+.print-export-button.simple-export {
+  background-color: var(--info-color, #2196f3);
+  color: white;
+}
+
+.print-export-button.simple-export:hover {
+  background-color: var(--info-color, #2196f3);
+  filter: brightness(1.1);
+}
+
+.print-export-button.simple-export:active {
+  background-color: var(--info-color, #2196f3);
+  filter: brightness(0.9);
+}
+>>>>>>> ee2ec35660f398e4321007b3c070aa5b1ac7d7c1

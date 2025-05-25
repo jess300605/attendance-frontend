@@ -1,46 +1,218 @@
-# Getting Started with Create React App
+### README  Sistema de Gestión de Asistencia Escolar
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 🎓 Sistema de Gestión de Asistencia Escolar - Frontend
 
-## Available Scripts
+### 📋 Descripción General
 
-In the project directory, you can run:
+El frontend del Sistema de Gestión de Asistencia Escolar es una aplicación web desarrollada en React con TypeScript 
+que proporciona una interfaz intuitiva para que los docentes gestionen la asistencia de sus estudiantes, administren aulas, 
+registren calificaciones y generen reportes. Esta aplicación se conecta a una API REST desarrollada en 
+Java para la persistencia de datos.
+```plaintext
+--🚀 Características Principales
+--🏫 Gestión de Aulas: Crear, editar y eliminar aulas/salones
+--👨‍🎓 Gestión de Estudiantes: Administrar información de estudiantes
+--✅ Registro de Asistencia: Interfaz simplificada para tomar asistencia
+--📊 Calificaciones: Registro y seguimiento de calificaciones
+--📑 Exportación a Excel: Generación de reportes en formato Excel
+--🌓 Tema Claro/Oscuro: Personalización de la interfaz
+--🔔 Sistema de Notificaciones: Alertas y mensajes informativos
+--📱 Diseño Responsivo: Adaptable a diferentes dispositivos
+```
 
-### `npm start`
+### 1. 🛠 Requisitos del Sistema
+```plaintext
+--Node.js 14.x o superior
+--npm 6.x o superior o yarn 1.22.x o superior
+--Navegador web moderno (Chrome, Firefox, Edge, Safari)
+--Conexión a la API backend (Java)
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### ⚙️ Instalación y Configuración
+```plaintext
+--1. Clonar el Repositorio
+git clone https://github.com/su-usuario/attendance-frontend.git
+cd attendance-frontend
+```
+### 2. Instalar Dependencias
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```shellscript
+# Usando npm
+npm install
 
-### `npm test`
+# O usando yarn
+yarn install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 3. Configurar Variables de Entorno
 
-### `npm run build`
+Cree un archivo `.env` en la raíz del proyecto con el siguiente contenido:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```plaintext
+REACT_APP_API_URL=http://localhost:8080/api
+REACT_APP_VERSION=1.0.0
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 4. Iniciar la Aplicación en Modo Desarrollo
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```shellscript
+# Usando npm
+npm start
 
-### `npm run eject`
+# O usando yarn
+yarn start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 5. Compilar para Producción
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```shellscript
+# Usando npm
+npm run build
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+# O usando yarn
+yarn build
+```
 
-## Learn More
+Los archivos compilados se generarán en la carpeta `build/`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📁 Estructura del Proyecto
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```plaintext
+attendance-frontend/
+├── public/                  # Archivos públicos estáticos
+├── src/
+│   ├── components/          # Componentes reutilizables
+│   ├── context/             # Contextos de React
+│   ├── layouts/             # Layouts de la aplicación
+│   ├── pages/               # Páginas/Vistas
+│   ├── services/            # Comunicación con la API
+│   ├── styles/              # Estilos y temas
+│   ├── types/               # Definiciones TypeScript
+│   ├── utils/               # Utilidades y helpers
+│   ├── App.tsx              # Componente principal
+│   └── index.tsx            # Punto de entrada
+├── .env                     # Variables de entorno
+├── package.json             # Dependencias y scripts
+├── tsconfig.json            # Configuración de TypeScript
+└── README.md                # Documentación del proyecto
+```
+
+## 📦 Dependencias
+
+### Principales
+
+```json
+{
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.1",
+    "react-toastify": "^9.1.3",
+    "xlsx": "^0.18.5",
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "typescript": "^5.1.6",
+    "web-vitals": "^3.3.2"
+  }
+}
+```
+
+### Desarrollo
+
+```json
+{
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.4.1",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.0.0"
+  }
+}
+```
+
+## 🔗 Integración con la API
+
+La aplicación se comunica con la API backend mediante servicios dedicados.
+
+*Ejemplo - Servicio para obtener aulas:*
+
+```typescript
+export const getClassroomsByTeacher = async (teacherId: number): Promise<Classroom[]> => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/classrooms/teacher/${teacherId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener los salones');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+```
+
+## 🧩 Convenciones de Código
+
+- **TypeScript** en todos los archivos
+- Nomenclatura:
+
+- PascalCase para componentes React
+- camelCase para funciones y variables
+- kebab-case para archivos CSS
+
+
+
+- Documentar funciones/componentes complejos
+- Usar interfaces para props y tipos de datos
+
+
+## 🛠 Solución de Problemas Comunes
+
+### 🔐 Error de Autenticación
+
+- Verifique el token JWT en localStorage
+- Compruebe si ha expirado
+- Cierre sesión e intente de nuevo
+
+
+### 📑 Problemas de Exportación a Excel
+
+- Asegúrese que los datos no sean null o undefined
+- Verifique la estructura de los datos
+- Revise la consola del navegador
+
+
+### 🖥 Problemas de Visualización
+
+- Use un navegador moderno
+- Borre la caché del navegador
+- Verifique las variables CSS
+
+
+## 📚 Recursos
+
+- [Documentación oficial de React](https://reactjs.org/)
+- [Documentación de Create React App](https://github.com/facebook/create-react-app/docs/getting-started)
+
+
+---
+
+© 2023 **Sistema de Gestión de Asistencia Escolar**. Todos los derechos reservados.
