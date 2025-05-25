@@ -1,0 +1,48 @@
+.month-year-picker {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.picker-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Estilos para las etiquetas con fondo oscuro */
+.print-options-panel .picker-group label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Estilos para los selectores con fondo oscuro */
+.print-options-panel .picker-group select {
+  padding: 10px 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: white;
+  min-width: 160px;
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.print-options-panel .picker-group select:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.print-options-panel .picker-group select:focus {
+  outline: none;
+  border-color: var(--secondary-light, #26b516);
+  box-shadow: 0 0 0 2px rgba(255, 174, 109, 0.3);
+}
+
+/* Estilo para las opciones del select */
+.print-options-panel .picker-group select option {
+  background-color: var(--primary-dark, #002984);
+  color: white;
+  padding: 8px;
+}

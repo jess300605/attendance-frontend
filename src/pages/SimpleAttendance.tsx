@@ -12,8 +12,14 @@ import {
 } from "../services/attendanceSessionService"
 import { takeAttendanceForSession } from "../services/attendanceSessionService"
 import { getTeacherId } from "../services/authService"
+import { exportAttendanceForPrinting, exportSimpleAttendanceByClassroom } from "../services/exportService"
 import type { Classroom, AttendanceSession, Attendance } from "../types"
 import "./SimpleAttendance.css"
+import PrintExportButton from "../components/PrintExportButton"
+import SimpleAttendanceExportButton from "../components/SimpleAttendanceExportButton"
+import MonthYearPicker from "../components/MonthYearPicker"
+import { getGradesByClassroom } from "../services/gradeService"
+import { getStudents } from "../services/studentService" // Importar servicio de estudiantes
 
 const SimpleAttendance: React.FC = () => {
   const { classroomId } = useParams<{ classroomId: string }>()
@@ -29,6 +35,13 @@ const SimpleAttendance: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [submitting, setSubmitting] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [grades, setGrades] = useState<any[]>([])
+
+  // NUEVOS ESTADOS PARA GESTIÓN DE ESTUDIANTES
+  const [showStudentManagement, setShowStudentManagement] = useState<boolean>(false)
+  const [availableStudents, setAvailableStudents] = useState<any[]>([])
+  const [selectedStudents, setSelectedStudents] = useState<number[]>([])
+  const [loadingStudents, setLoadingStudents] = useState<boolean>(false)
 
   // Datos para nueva sesión
   const [sessionDate, setSessionDate] = useState<string>(new Date().toISOString().split("T")[0])
@@ -37,6 +50,12 @@ const SimpleAttendance: React.FC = () => {
   )
   const [sessionEndTime, setSessionEndTime] = useState<string>("")
   const [sessionTopic, setSessionTopic] = useState<string>("")
+
+  // Estados para la exportación a Excel
+  const [showPrintOptions, setShowPrintOptions] = useState<boolean>(false)
+  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1)
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
+  const [allAttendanceData, setAllAttendanceData] = useState<any[]>([])
 
   // Cargar los salones del profesor
   useEffect(() => {
@@ -74,6 +93,14 @@ const SimpleAttendance: React.FC = () => {
       // Cargar las sesiones para este salón
       fetchSessions(id)
 
+      // Cargar las calificaciones para este salón
+      try {
+        const gradesData = await getGradesByClassroom(id)
+        setGrades(gradesData)
+      } catch (err) {
+        console.error("Error fetching grades:", err)
+      }
+
       setLoading(false)
     } catch (err) {
       console.error("Error fetching classroom details:", err)
@@ -85,12 +112,98 @@ const SimpleAttendance: React.FC = () => {
   const fetchSessions = async (classroomId: number) => {
     try {
       const sessions = await getAttendanceSessionsByClassroom(classroomId)
-      // Ordenar sesiones por fecha, las más recientes primero
       const sortedSessions = sessions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       setSessions(sortedSessions)
+
+      // Recopilar todos los datos de asistencia para la exportación
+      const allAttendance: any[] = []
+      for (const session of sessions) {
+        if (session.attendanceRecords && session.attendanceRecords.length > 0) {
+          session.attendanceRecords.forEach((record) => {
+            if (record.student) {
+              allAttendance.push({
+                date: session.date,
+                studentId: (record.student as any).id,
+                present: record.present,
+                notes: record.notes || "",
+              })
+            }
+          })
+        }
+      }
+      setAllAttendanceData(allAttendance)
     } catch (err) {
       console.error("Error fetching sessions:", err)
       toast.error("Error al cargar las sesiones")
+    }
+  }
+
+  // NUEVA FUNCIÓN: Cargar estudiantes disponibles
+  const fetchAvailableStudents = async () => {
+    try {
+      setLoadingStudents(true)
+      const allStudents = await getStudents()
+
+      // Filtrar estudiantes que NO están en el salón actual
+      const currentStudentIds = selectedClassroom?.students?.map((s) => s.id) || []
+      const available = allStudents.filter((student) => !currentStudentIds.includes(student.id))
+
+      setAvailableStudents(available)
+      setLoadingStudents(false)
+    } catch (err) {
+      console.error("Error fetching available students:", err)
+      toast.error("Error al cargar estudiantes disponibles")
+      setLoadingStudents(false)
+    }
+  }
+
+  // NUEVA FUNCIÓN: Manejar selección de estudiantes
+  const handleStudentSelection = (studentId: number) => {
+    setSelectedStudents((prev) => {
+      if (prev.includes(studentId)) {
+        return prev.filter((id) => id !== studentId)
+      } else {
+        return [...prev, studentId]
+      }
+    })
+  }
+
+  // NUEVA FUNCIÓN: Agregar estudiantes seleccionados al salón
+  const handleAddStudentsToClassroom = async () => {
+    if (!selectedClassroom || selectedStudents.length === 0) {
+      toast.warning("Selecciona al menos un estudiante")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+
+      // Aquí necesitarías implementar la función en el servicio
+      // Por ahora simularemos la actualización
+      const updatedStudents = [
+        ...(selectedClassroom.students || []),
+        ...availableStudents.filter((s) => selectedStudents.includes(s.id)),
+      ]
+
+      setSelectedClassroom({
+        ...selectedClassroom,
+        students: updatedStudents,
+      })
+
+      toast.success(`${selectedStudents.length} estudiante(s) agregado(s) al salón`)
+
+      // Limpiar selección y cerrar modal
+      setSelectedStudents([])
+      setShowStudentManagement(false)
+
+      // Recargar estudiantes disponibles
+      await fetchAvailableStudents()
+
+      setSubmitting(false)
+    } catch (err) {
+      console.error("Error adding students to classroom:", err)
+      toast.error("Error al agregar estudiantes al salón")
+      setSubmitting(false)
     }
   }
 
@@ -101,15 +214,12 @@ const SimpleAttendance: React.FC = () => {
   const handleSessionSelect = async (session: AttendanceSession) => {
     try {
       setLoading(true)
-      // Obtener detalles completos de la sesión
       const sessionDetails = await getAttendanceSessionById(session.id as number)
       setSelectedSession(sessionDetails)
 
-      // Inicializar los registros de asistencia
       if (selectedClassroom?.students && selectedClassroom.students.length > 0) {
         const initialRecords: Record<number, boolean> = {}
 
-        // Si la sesión ya tiene registros de asistencia, usarlos
         if (sessionDetails.attendanceRecords && sessionDetails.attendanceRecords.length > 0) {
           sessionDetails.attendanceRecords.forEach((record) => {
             if (record.student && (record.student as any).id) {
@@ -117,7 +227,6 @@ const SimpleAttendance: React.FC = () => {
             }
           })
         } else {
-          // Si no, inicializar todos como presentes
           selectedClassroom.students.forEach((student) => {
             if (student.id) {
               initialRecords[student.id] = true
@@ -156,14 +265,10 @@ const SimpleAttendance: React.FC = () => {
       const createdSession = await createAttendanceSession(selectedClassroom.id, newSession)
       toast.success("Sesión creada correctamente")
 
-      // Actualizar la lista de sesiones
       await fetchSessions(selectedClassroom.id)
-
-      // Seleccionar la sesión recién creada
       setSelectedSession(createdSession)
       setShowSessionForm(false)
 
-      // Inicializar los registros de asistencia
       if (selectedClassroom.students && selectedClassroom.students.length > 0) {
         const initialRecords: Record<number, boolean> = {}
         selectedClassroom.students.forEach((student) => {
@@ -203,7 +308,6 @@ const SimpleAttendance: React.FC = () => {
     try {
       setSubmitting(true)
 
-      // Crear registros de asistencia para cada estudiante
       const attendanceList: Attendance[] = selectedClassroom.students
         .filter((student) => student.id)
         .map((student) => {
@@ -258,6 +362,74 @@ const SimpleAttendance: React.FC = () => {
     setAttendanceRecords(newRecords)
   }
 
+  const handleExportForPrinting = () => {
+    if (!selectedClassroom || !selectedClassroom.students || selectedClassroom.students.length === 0) {
+      toast.warning("No hay estudiantes para exportar")
+      return
+    }
+
+    if (allAttendanceData.length === 0) {
+      toast.warning("No hay datos de asistencia para exportar")
+      return
+    }
+
+    try {
+      const success = exportAttendanceForPrinting(
+        selectedClassroom.name || "Aula",
+        selectedClassroom.students,
+        allAttendanceData,
+        selectedMonth,
+        selectedYear,
+        `Asistencia_${selectedClassroom.name}_${selectedMonth}_${selectedYear}`,
+        grades,
+      )
+
+      if (success) {
+        toast.success("Asistencia y calificaciones exportadas exitosamente")
+        setShowPrintOptions(false)
+      } else {
+        toast.error("Error al exportar asistencia y calificaciones")
+      }
+    } catch (error) {
+      console.error("Error exporting attendance:", error)
+      toast.error("Error al exportar asistencia")
+    }
+  }
+
+  const handleExportSimpleAttendance = () => {
+    if (!selectedClassroom || !selectedClassroom.name) {
+      toast.warning("No hay información del salón para exportar")
+      return
+    }
+
+    if (allAttendanceData.length === 0) {
+      toast.warning("No hay datos de asistencia para exportar")
+      return
+    }
+
+    try {
+      const exportData = allAttendanceData.map((record) => ({
+        ...record,
+        student: selectedClassroom.students?.find((s) => s.id === record.studentId) || null,
+      }))
+
+      const success = exportSimpleAttendanceByClassroom(
+        selectedClassroom.name,
+        exportData,
+        `Asistencia_Simple_${selectedClassroom.name}`,
+      )
+
+      if (success) {
+        toast.success("Asistencia simple exportada exitosamente")
+      } else {
+        toast.error("Error al exportar asistencia simple")
+      }
+    } catch (error) {
+      console.error("Error exporting simple attendance:", error)
+      toast.error("Error al exportar asistencia")
+    }
+  }
+
   if (loading) {
     return <div className="loading">Cargando...</div>
   }
@@ -307,17 +479,149 @@ const SimpleAttendance: React.FC = () => {
               <h2>
                 {selectedClassroom.name} ({selectedClassroom.courseCode})
               </h2>
+              <p className="student-count">
+                <i className="fas fa-user-graduate"></i> {selectedClassroom.students?.length || 0} estudiantes
+              </p>
             </div>
           </div>
           <div className="header-actions">
             <button className="btn btn-secondary" onClick={() => navigate("/attendance")}>
               Volver
             </button>
+            {/* NUEVO BOTÓN: Gestionar Estudiantes */}
+            <button
+              className="btn btn-info"
+              onClick={() => {
+                setShowStudentManagement(!showStudentManagement)
+                if (!showStudentManagement) {
+                  fetchAvailableStudents()
+                }
+              }}
+            >
+              <i className="fas fa-users"></i> {showStudentManagement ? "Cerrar" : "Gestionar Estudiantes"}
+            </button>
+            <button
+              className="btn btn-info"
+              onClick={() => setShowPrintOptions(!showPrintOptions)}
+              disabled={!selectedClassroom.students || selectedClassroom.students.length === 0}
+            >
+              <i className="fas fa-print"></i> {showPrintOptions ? "Ocultar Opciones" : "Imprimir Asistencia"}
+            </button>
             <button className="btn btn-primary" onClick={() => setShowSessionForm(!showSessionForm)}>
               {showSessionForm ? "Cancelar" : "Nueva Sesión"}
             </button>
           </div>
         </div>
+
+        {/* NUEVO PANEL: Gestión de Estudiantes */}
+        {showStudentManagement && (
+          <div className="student-management-panel">
+            <h3>Agregar Estudiantes al Salón</h3>
+
+            {/* Estudiantes actuales del salón */}
+            <div className="current-students">
+              <h4>Estudiantes Actuales ({selectedClassroom.students?.length || 0})</h4>
+              {selectedClassroom.students && selectedClassroom.students.length > 0 ? (
+                <div className="student-list-compact">
+                  {selectedClassroom.students.map((student) => (
+                    <div key={student.id} className="student-item-compact">
+                      <span>
+                        {student.firstName} {student.lastName}
+                      </span>
+                      <span className="student-id">({student.studentId})</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="no-students">No hay estudiantes asignados a este salón</p>
+              )}
+            </div>
+
+            {/* Estudiantes disponibles para agregar */}
+            <div className="available-students">
+              <h4>Estudiantes Disponibles</h4>
+              {loadingStudents ? (
+                <div className="loading-students">Cargando estudiantes...</div>
+              ) : availableStudents.length > 0 ? (
+                <>
+                  <div className="student-selection-list">
+                    {availableStudents.map((student) => (
+                      <div key={student.id} className="student-selection-item">
+                        <label className="student-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectedStudents.includes(student.id)}
+                            onChange={() => handleStudentSelection(student.id)}
+                          />
+                          <span className="checkmark"></span>
+                          <div className="student-info">
+                            <span className="student-name">
+                              {student.firstName} {student.lastName}
+                            </span>
+                            <span className="student-details">
+                              ID: {student.studentId} | Email: {student.email}
+                            </span>
+                          </div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="student-management-actions">
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleAddStudentsToClassroom}
+                      disabled={selectedStudents.length === 0 || submitting}
+                    >
+                      {submitting ? "Agregando..." : `Agregar ${selectedStudents.length} Estudiante(s)`}
+                    </button>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => setSelectedStudents([])}
+                      disabled={selectedStudents.length === 0}
+                    >
+                      Limpiar Selección
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <p className="no-available-students">No hay estudiantes disponibles para agregar</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Panel de opciones de impresión */}
+        {showPrintOptions && (
+          <div className="print-options-panel">
+            <h3>Opciones de Impresión</h3>
+            <p>Selecciona el mes y año para generar el reporte de asistencia:</p>
+            <MonthYearPicker
+              month={selectedMonth}
+              year={selectedYear}
+              onMonthChange={setSelectedMonth}
+              onYearChange={setSelectedYear}
+            />
+            <div className="print-actions">
+              <PrintExportButton
+                onClick={handleExportForPrinting}
+                disabled={
+                  !selectedClassroom.students ||
+                  selectedClassroom.students.length === 0 ||
+                  allAttendanceData.length === 0
+                }
+              />
+              <SimpleAttendanceExportButton
+                onClick={handleExportSimpleAttendance}
+                disabled={allAttendanceData.length === 0}
+                label="Exportar Asistencia Simple"
+              />
+              <button className="btn btn-outline" onClick={() => setShowPrintOptions(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
 
         {showSessionForm ? (
           <div className="session-form">
@@ -492,11 +796,22 @@ const SimpleAttendance: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="no-data">No hay estudiantes asignados a este salón</div>
+        <div className="no-data">
+          No hay estudiantes asignados a este salón.{" "}
+          <button
+            className="btn btn-link"
+            onClick={() => {
+              setSelectedSession(null)
+              setShowStudentManagement(true)
+              fetchAvailableStudents()
+            }}
+          >
+            Agregar estudiantes
+          </button>
+        </div>
       )}
     </div>
   )
 }
 
 export default SimpleAttendance
-

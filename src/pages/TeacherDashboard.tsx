@@ -5,7 +5,10 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { getClassroomsByTeacher } from "../services/classroomService"
 import { getTeacherId, getTeacherName } from "../services/authService"
+import { exportClassroomFullInfo } from "../services/exportService"
+import ClassroomExportButton from "../components/ClassroomExportButton"
 import type { Classroom } from "../types"
+import { toast } from "react-toastify"
 import "./TeacherDashboard.css"
 
 const TeacherDashboard: React.FC = () => {
@@ -36,6 +39,59 @@ const TeacherDashboard: React.FC = () => {
       setError("Error al cargar los salones asignados")
       setLoading(false)
       console.error("Error fetching classrooms:", err)
+    }
+  }
+
+  // Función para exportar la información de un salón específico
+  const handleExportClassroom = (classroom: Classroom, event?: React.MouseEvent) => {
+    // Detener la propagación para evitar que se active el clic en la tarjeta
+    if (event) {
+      event.stopPropagation()
+    }
+
+    if (!classroom) {
+      toast.warning("No hay información del salón para exportar")
+      return
+    }
+
+    try {
+      const success = exportClassroomFullInfo(classroom, `Información_Salón_${classroom.name}`)
+
+      if (success) {
+        toast.success("Información del salón exportada exitosamente")
+      } else {
+        toast.error("Error al exportar información del salón")
+      }
+    } catch (error) {
+      console.error("Error exporting classroom info:", error)
+      toast.error("Error al exportar información del salón")
+    }
+  }
+
+  // Función para exportar todos los salones
+  const handleExportAllClassrooms = () => {
+    if (!classrooms || classrooms.length === 0) {
+      toast.warning("No hay salones para exportar")
+      return
+    }
+
+    try {
+      // Crear un libro de trabajo con todos los salones
+      let successCount = 0
+
+      classrooms.forEach((classroom) => {
+        const success = exportClassroomFullInfo(classroom, `Información_Salón_${classroom.name}`)
+        if (success) successCount++
+      })
+
+      if (successCount > 0) {
+        toast.success(`${successCount} de ${classrooms.length} salones exportados exitosamente`)
+      } else {
+        toast.error("Error al exportar los salones")
+      }
+    } catch (error) {
+      console.error("Error exporting all classrooms:", error)
+      toast.error("Error al exportar los salones")
     }
   }
 
@@ -94,9 +150,14 @@ const TeacherDashboard: React.FC = () => {
       <div className="dashboard-classrooms">
         <div className="section-header">
           <h2>Mis Salones</h2>
-          <Link to="/classrooms/new" className="btn btn-primary">
-            <i className="fas fa-plus"></i> Nuevo Salón
-          </Link>
+          <div className="section-actions">
+            {classrooms.length > 0 && (
+              <ClassroomExportButton onClick={handleExportAllClassrooms} label="Exportar Todos los Salones" />
+            )}
+            <Link to="/classrooms/new" className="btn btn-primary">
+              <i className="fas fa-plus"></i> Nuevo Salón
+            </Link>
+          </div>
         </div>
 
         {classrooms.length === 0 ? (
@@ -105,6 +166,13 @@ const TeacherDashboard: React.FC = () => {
           <div className="classroom-grid">
             {classrooms.map((classroom) => (
               <div key={classroom.id} className="classroom-card">
+                {/* Botón de exportación en la esquina superior derecha */}
+                <ClassroomExportButton
+              onClick={() => handleExportClassroom(classroom)}
+              className="card-export-button"
+                label=""
+                  />
+
                 <div className="classroom-header">
                   <h3>{classroom.name}</h3>
                   <span className="course-code">{classroom.courseCode}</span>
@@ -164,4 +232,3 @@ const TeacherDashboard: React.FC = () => {
 }
 
 export default TeacherDashboard
-

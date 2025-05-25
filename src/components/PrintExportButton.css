@@ -1,0 +1,41 @@
+.print-export-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background-color: var(--secondary-color, #4aff40);
+  color: var(--text-on-secondary, #000000);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  min-width: 180px;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-light);
+}
+
+.print-export-button:hover {
+  background-color: var(--secondary-light, #1bac18);
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-1px);
+}
+
+.print-export-button:active {
+  background-color: var(--secondary-dark, #2cc31b);
+  transform: translateY(1px);
+  box-shadow: var(--shadow-light);
+}
+
+.print-export-button:disabled {
+  background-color: var(--text-disabled, #9e9e9e);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.print-export-button i {
+  font-size: 1.1rem;
+}

@@ -7,7 +7,9 @@ import { toast } from "react-toastify"
 import { getClassroomById, deleteClassroom } from "../services/classroomService"
 import { getAttendanceSessionsByClassroom } from "../services/attendanceSessionService"
 import { getGradesByClassroom } from "../services/gradeService"
+import { exportClassroomFullInfo } from "../services/exportService"
 import type { Classroom, AttendanceSession, Grade } from "../types"
+import ClassroomExportButton from "../components/ClassroomExportButton"
 import "./ClassroomDetail.css"
 
 const ClassroomDetail: React.FC = () => {
@@ -61,6 +63,33 @@ const ClassroomDetail: React.FC = () => {
     }
   }
 
+  // Función para exportar la información completa del salón
+  const handleExportClassroom = () => {
+    if (!classroom) {
+      toast.warning("No hay información del salón para exportar")
+      return
+    }
+
+    try {
+      // Preparar datos completos para la exportación
+      const classroomWithSessions = {
+        ...classroom,
+        attendanceSessions: sessions,
+      }
+
+      const success = exportClassroomFullInfo(classroomWithSessions, `Información_Salón_${classroom.name}`)
+
+      if (success) {
+        toast.success("Información del salón exportada exitosamente")
+      } else {
+        toast.error("Error al exportar información del salón")
+      }
+    } catch (error) {
+      console.error("Error exporting classroom info:", error)
+      toast.error("Error al exportar información del salón")
+    }
+  }
+
   if (loading) {
     return <div className="loading">Cargando datos del salón...</div>
   }
@@ -77,6 +106,7 @@ const ClassroomDetail: React.FC = () => {
           <span className="course-code">{classroom.courseCode}</span>
         </div>
         <div className="header-actions">
+          <ClassroomExportButton onClick={handleExportClassroom} disabled={loading} label="Exportar Información" />
           <Link to={`/classrooms/${id}/attendance`} className="btn btn-success">
             <i className="fas fa-clipboard-check"></i> Tomar Asistencia
           </Link>
@@ -142,6 +172,25 @@ const ClassroomDetail: React.FC = () => {
               <Link to={`/classrooms/${id}/students/add`} className="btn btn-primary">
                 <i className="fas fa-user-plus"></i> Agregar Estudiantes
               </Link>
+              {/* Botón para exportar solo la lista de estudiantes */}
+              {classroom.students && classroom.students.length > 0 && (
+                <ClassroomExportButton
+                  onClick={() => {
+                    try {
+                      const success = exportClassroomFullInfo(classroom, `Estudiantes_Salón_${classroom.name}`)
+                      if (success) {
+                        toast.success("Lista de estudiantes exportada exitosamente")
+                      } else {
+                        toast.error("Error al exportar lista de estudiantes")
+                      }
+                    } catch (error) {
+                      console.error("Error exporting students:", error)
+                      toast.error("Error al exportar lista de estudiantes")
+                    }
+                  }}
+                  label="Exportar Estudiantes"
+                />
+              )}
             </div>
 
             {classroom.students && classroom.students.length > 0 ? (
@@ -196,6 +245,31 @@ const ClassroomDetail: React.FC = () => {
               <Link to={`/attendance-sessions/new?classroomId=${id}`} className="btn btn-primary">
                 <i className="fas fa-plus"></i> Nueva Sesión
               </Link>
+              {/* Botón para exportar solo las sesiones */}
+              {sessions.length > 0 && (
+                <ClassroomExportButton
+                  onClick={() => {
+                    try {
+                      // Crear un objeto con solo la información necesaria
+                      const sessionData = {
+                        ...classroom,
+                        attendanceSessions: sessions,
+                      }
+
+                      const success = exportClassroomFullInfo(sessionData, `Sesiones_Salón_${classroom.name}`)
+                      if (success) {
+                        toast.success("Sesiones exportadas exitosamente")
+                      } else {
+                        toast.error("Error al exportar sesiones")
+                      }
+                    } catch (error) {
+                      console.error("Error exporting sessions:", error)
+                      toast.error("Error al exportar sesiones")
+                    }
+                  }}
+                  label="Exportar Sesiones"
+                />
+              )}
             </div>
 
             {sessions.length > 0 ? (
@@ -253,6 +327,31 @@ const ClassroomDetail: React.FC = () => {
               <Link to={`/grades/new?classroomId=${id}`} className="btn btn-primary">
                 <i className="fas fa-plus"></i> Agregar Calificaciones
               </Link>
+              {/* Botón para exportar solo las calificaciones */}
+              {grades.length > 0 && (
+                <ClassroomExportButton
+                  onClick={() => {
+                    try {
+                      // Crear un objeto con solo la información necesaria
+                      const gradeData = {
+                        ...classroom,
+                        grades: grades,
+                      }
+
+                      const success = exportClassroomFullInfo(gradeData, `Calificaciones_Salón_${classroom.name}`)
+                      if (success) {
+                        toast.success("Calificaciones exportadas exitosamente")
+                      } else {
+                        toast.error("Error al exportar calificaciones")
+                      }
+                    } catch (error) {
+                      console.error("Error exporting grades:", error)
+                      toast.error("Error al exportar calificaciones")
+                    }
+                  }}
+                  label="Exportar Calificaciones"
+                />
+              )}
             </div>
 
             {grades.length > 0 ? (
@@ -310,4 +409,3 @@ const ClassroomDetail: React.FC = () => {
 }
 
 export default ClassroomDetail
-
